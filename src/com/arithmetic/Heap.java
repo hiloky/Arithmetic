@@ -126,7 +126,7 @@ public class Heap {
      * @param k
      */
     public void sortedArrDist(int[] arr,int k){
-        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        PriorityQueue<Integer> heap = new PriorityQueue<>();//堆
 
         int index = 0;
         //0...K
