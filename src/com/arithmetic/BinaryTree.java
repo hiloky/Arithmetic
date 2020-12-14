@@ -1,9 +1,13 @@
 package com.arithmetic;
 
+import java.sql.Struct;
 import java.util.*;
 
 /**
   二叉树
+  1.递归遍历
+  2.hash操作
+  3.递归遍历
  */
 public class BinaryTree {
     public BinaryTree(){
@@ -25,6 +29,7 @@ public class BinaryTree {
      * 【思路】 【递归实现】
      *  其中每一次达到节点3次，假如有7个几点分别为1~7；数走的次序为
      *  124442555213666377731  -> 每次每个节点走了3次，其中打印每次的第一个节点为线序，打印第二次走的节点为中序，打印第三次走的节点为后序
+     *  时间复杂度：O(N)
      */
     public static void pre(Node head){
         if(head == null){
@@ -258,8 +263,159 @@ public class BinaryTree {
      * 如何设计一个打印整棵树的打印函数
      * 【思路】
      */
-    public static void printTreeFunc(){
+    public static void printTreeFunc(Node head,int height,String to,int len){
+        if(head == null){
+            return;
+        }
+        printTreeFunc(head.left,height+1,"^",len);
+
+
+        printTreeFunc(head.right,height+1,"v",len );
+    }
+
+    /**
+     * 中序遍历
+     * 随机给一个节点，找后继节点
+     * 【思路】 给定的节点是其头节点左子树，则其头节点是后继节点，否则一直找
+     *  具体来说，给定节点，这个节点是其整棵树的 左子树的最右节点
+     */
+    public static void getInNode(Node k){
+
 
     }
+
+    public static class Info{
+        public boolean isAllBST;
+        public int maxSubBSTSize;
+        public int max;
+        public int min;
+
+        public Info(boolean is,int size,int mi,int ma){
+            isAllBST = is;
+            maxSubBSTSize = size;
+            max = ma;
+            min = mi;
+        }
+    }
+    /**
+     * 二叉树的递归套路
+     * 假设以X节点为头，假设可以向X左树和X右树要任何信息
+     * 在上一步的假设下，讨论以X为头节点的树，得到答案的可能性(最重要)
+     * 列出所有可能性后，确定到底需要向左数和右树要什么样的信息
+     * 把左树信息和右树信息求全集，就是任何一棵子树都需要返回的信息S
+     * 递归函数返回S，每一棵子树都这么要求
+     * 写代码，在代码中考虑如何把左树的信息和右树信息整合出整棵树的信息
+     *
+     */
+
+    /**
+     * 返回一棵树的最大搜索二叉树的节点信息， 整颗子树满足  左<头<右
+     * @param X
+     * @return
+     */
+    public static Info getNodeNum(Node X){
+        if(X == null){
+            return null;
+        }
+        Info leftInfo = getNodeNum(X.left);
+        Info rightInfo = getNodeNum(X.right);
+
+        int min = X.value;
+        int max = X.value;
+        if(leftInfo != null){
+            min = Math.min(min,leftInfo.min);
+            max = Math.max(max,leftInfo.max);
+        }
+        if(rightInfo != null){
+            min = Math.min(min,rightInfo.min);
+            max = Math.max(max,rightInfo.max);
+        }
+
+        int maxSubBSTSize = 0;
+        if(leftInfo != null){
+            maxSubBSTSize = leftInfo.maxSubBSTSize;
+        }
+        if(rightInfo != null){
+            maxSubBSTSize = Math.max(maxSubBSTSize,rightInfo.maxSubBSTSize);
+        }
+
+        boolean isAllBST = false;
+
+        //左树整体需要时搜索二叉树 、右树整体为搜索二叉树、左树最大值小于x、右树zui
+        if((leftInfo == null?true:leftInfo.isAllBST) &&
+            (rightInfo == null?true:rightInfo.isAllBST) &&
+            (leftInfo ==null? true:leftInfo.max < X.value)  &&
+            (rightInfo == null?true:rightInfo.min > X.value)
+        )
+        {
+            maxSubBSTSize = (leftInfo == null?0: leftInfo.maxSubBSTSize )+ (rightInfo == null ?0:rightInfo.maxSubBSTSize) +1;
+            isAllBST = true;
+        }
+
+        return new Info(isAllBST,maxSubBSTSize,min,max);
+    }
+
+    /**
+     * 证明一棵树为完全二叉树
+     * 【思路】
+     * 1.按层遍历 ，队列 + 判断到有节点为不全节点，即却子树或者无子树，则剩下遍历的节点都应该为叶节点（无子树）
+     * 2.二叉树的递归套路:
+     *   2.1)左树满的，右树满的  且 左树h == 右树h
+     *   2.2）最后一层涨的时候没有越过左树 --》 左树高度=右树高度+1 && 左树是完全二叉树、右树是满二叉树
+     *   2.3）左树是满二叉树、右树是满二叉树 && 左树高度 = 右树高度+1
+     *   2.4）左树是满二叉树、右树是完全二叉树 && 左树高度 = 右树高度
+     *   以上满足一点即为完全二叉树
+     */
+    public static InfoWanquan questionWait1(Node X){
+
+        //todo...
+
+
+
+        return new InfoWanquan(false,false,0);
+    }
+
+    public static class InfoWanquan{
+        public boolean isFull;
+        public boolean isCBT;
+        public int height;
+
+        public InfoWanquan(boolean full,boolean CBT,int h){
+            isCBT = CBT;
+            isFull = full;
+            height = h;
+        }
+    }
+
+    /**
+     * 深度优先算法例子
+     * 将一个数组内元素以不同的组合方式组成字符串
+     */
+    public static void process(String[] strs,
+                               HashSet<Integer> use,
+                               String path,
+                               ArrayList<String> all){
+        if(use.size() == strs.length){
+            all.add(path);
+        }
+        else{
+            for (int i = 0;i< strs.length;i++){
+                if(!use.contains(i)){
+                    use.add(i);
+                    process(strs,use,path+strs[i],all);
+                    use.remove(i);
+                }
+            }
+        }
+    }
+
+    /*************************************** 贪心算法 ************************************************/
+    /**
+     * 1 最自然智慧的算法
+     * 2 用一种局部最功利的标准，总是做出在当前看来是最好的选择
+     * 3 难点在于证明局部最公里的标准可以得到全局最优解
+     * 4 对于贪心算法的学习主要以增加阅历和经验为主
+     */
+
 
 }
