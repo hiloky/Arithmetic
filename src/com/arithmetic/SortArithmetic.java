@@ -12,18 +12,18 @@ public class SortArithmetic {
     * 复杂度 O(n*n)
     * 依次对比将最小数放到当前 i-1 位置
     */
-    public int[] selectSort(){
-        for(int i = 1;i<arr.length;i++){
-            for(int j = i;j<arr.length;j++){
-                if(arr[i-1] > arr[j]){
-                    int temp = arr[i-1];
-                    arr[i-1] = arr[j];
-                    arr[j] = temp;
+    public static void selectSort(int[] arrs){
+        for(int i = 1;i<arrs.length;i++){
+            for(int j = i;j<arrs.length;j++){
+                if(arrs[i-1] > arrs[j]){
+                    int temp = arrs[i-1];
+                    arrs[i-1] = arrs[j];
+                    arrs[j] = temp;
                 }
             }
         }
 
-        return arr;
+       // return arr;
     }
 
     /**
